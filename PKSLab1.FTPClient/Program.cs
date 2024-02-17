@@ -45,6 +45,9 @@ if(client != null)
                 client.Disconnect(); 
                 client = LogIn();
                 break;
+            case "help":
+                Console.WriteLine("download\nupload\nls\ncd\ndelete\nmv\nmkdir\nrmdir\ndisconnect");
+                break;
             default: Console.WriteLine("Несуществующая команда!"); 
                 break;
         }
