@@ -1,6 +1,7 @@
 ﻿using FluentFTP;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +35,12 @@ namespace FTPClientBL.Controller
             }
         }
 
+        public FTPClientController(FtpClient client)
+        {
+            _client = client;
+            _client.Connect();
+        }
+
         public void Disconnect()
         {
             _client.Disconnect();
@@ -48,22 +55,25 @@ namespace FTPClientBL.Controller
 
             if (args[1].Equals(".."))
             {
-                var dirs = _folder.Split('/');
+                if (_folder != null)
+                {
+                    var dirs = _folder.Split('/');
 
-                if (dirs.Length <= 1)
-                {
-                    _folder = string.Empty;
-                }
-                else
-                {
-                    _folder = string.Join("/", dirs.SkipLast(1));
+                    if (dirs.Length <= 1)
+                    {
+                        _folder = string.Empty;
+                    }
+                    else
+                    {
+                        _folder = string.Join("/", dirs.SkipLast(1));
+                    }
                 }
             }
             else if (args[1].Equals("~"))
             {
-                _folder = $"C:\\Users\\{Environment.UserName}";
+                _folder = $"";
             }
-            else
+            else 
             {
                 _folder += "/" + args[1];
             }
@@ -112,10 +122,7 @@ namespace FTPClientBL.Controller
 
                 var path = _folder + "/" + args[1];
 
-                if (_client.FileExists(args[1]))
-                {
-                    _client.DownloadFile(Environment.CurrentDirectory + "\\" + args[1], path, FtpLocalExists.Overwrite, FtpVerify.Retry);
-                }
+                _client.DownloadFile(Environment.CurrentDirectory + "\\" + args[1], path);
             }
             else
             {
